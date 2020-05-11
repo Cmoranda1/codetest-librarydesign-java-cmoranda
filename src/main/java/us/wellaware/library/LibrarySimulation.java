@@ -72,18 +72,23 @@ public class LibrarySimulation implements Library {
         maxShelfSize = shelfSize;
     }
 
+    private String shelfNameString(String genre, int num) {
+        StringBuilder str = new StringBuilder();
+        str.append(genre);
+        str.append(" - ");
+        str.append(Integer.toString(num));
+        return str.toString();
+    }
+
     /*go through shelves, add book, sort, add back*/
     private void findSpot(Book book, int num_shelves) {
         List<Book> genreBooks = new LinkedList<Book>();
-        StringBuilder str = new StringBuilder();
+        String str = "";
         /*For all shelves in a particular genre, add every book to a 
           temporary list for sorting purposes*/
         for(int i = 1; i <= num_shelves; i++) {
-            str = new StringBuilder();
-            str.append(book.genre);
-            str.append(" - ");
-            str.append(Integer.toString(i));
-            Shelf s = this.library.get(str.toString());
+            str = shelfNameString(book.genre, i);
+            Shelf s = this.library.get(str);
             for(Book bs : s.books) {
                 genreBooks.add(bs);
             }
@@ -100,11 +105,8 @@ public class LibrarySimulation implements Library {
                 this.library.put(str.toString(), temp_shelf);
             }
             if(rel_index == 0) {
-                str = new StringBuilder();
-                str.append(book.genre);
-                str.append(" - ");
-                str.append(Integer.toString(shelf_num));
-                temp_shelf = this.library.get(str.toString());
+                str = shelfNameString(book.genre, shelf_num);
+                temp_shelf = this.library.get(str);
                 temp_shelf.books = new ArrayList<Book>();
             }
             temp_shelf.books.add(rel_index, b);
@@ -113,44 +115,31 @@ public class LibrarySimulation implements Library {
     }
 
     private void findShelf(Book book) {
-        StringBuilder str = new StringBuilder();
         int x = 1;
-        str.append(book.genre);
-        str.append(" - ");
-        str.append(Integer.toString(x));
+        String str = shelfNameString(book.genre, x);
         
         /*if no shelves have been made for this genre, create the first one and
           add book*/
-        if(!this.library.containsKey(str.toString())) {
+        if(!this.library.containsKey(str)) {
             Shelf s = new Shelf(x, book.genre, this.maxShelfSize);
             s.books.add(book);
-            this.library.put(str.toString(), s);
+            this.library.put(str, s);
             return;
         }
 
-        while(this.library.containsKey(str.toString())) {
+        while(this.library.containsKey(str)) {
             x++;
-            str = new StringBuilder();
-            str.append(book.genre);
-            str.append(" - ");
-            str.append(Integer.toString(x));
+            str = shelfNameString(book.genre, x);
         }
-        
         x--;
-        str = new StringBuilder();
-        str.append(book.genre);
-        str.append(" - ");
-        str.append(Integer.toString(x));
+        str = shelfNameString(book.genre, x);;
 
         /*if the current shelf is full, create a new one*/
-        if(this.library.get(str.toString()).books.size() == this.maxShelfSize) {
+        if(this.library.get(str).books.size() == this.maxShelfSize) {
             x++;
-            str = new StringBuilder();
-            str.append(book.genre);
-            str.append(" - ");
-            str.append(Integer.toString(x));
+            str = shelfNameString(book.genre, x);
             Shelf s = new Shelf(x, book.genre, this.maxShelfSize);
-            this.library.put(str.toString(), s);
+            this.library.put(str, s);
             /*Sort the shelves*/
             findSpot(book, x);
             return;
