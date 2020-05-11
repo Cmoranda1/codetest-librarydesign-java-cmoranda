@@ -6,6 +6,8 @@ public interface Library {
     boolean addBookToShelf(long isbn, String title, String author, String genre, String publisher,
                         int publicationYear, int pageCount);
 
+    /*A helper function for debugging*/
+    /*void printMap();*/
     String getBookTitle(long isbn);
 
     List<String> getShelfNames();
