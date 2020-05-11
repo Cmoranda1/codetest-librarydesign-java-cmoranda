@@ -102,7 +102,7 @@ public class LibrarySimulation implements Library {
             if(rel_index == this.maxShelfSize) {
                 rel_index = 0;
                 shelf_num++;
-                this.library.put(str.toString(), temp_shelf);
+                this.library.put(str, temp_shelf);
             }
             if(rel_index == 0) {
                 str = shelfNameString(book.genre, shelf_num);
@@ -213,26 +213,19 @@ public class LibrarySimulation implements Library {
 
     public List<Long> getISBNsForGenre(String genre, int limit) {
         List<Long> isbnsForGenre = new ArrayList<Long>();
-
-        StringBuilder str = new StringBuilder();
         int x = 1;
-        str.append(genre);
-        str.append(" - ");
-        str.append(Integer.toString(x));
+        String str = shelfNameString(genre, x);
 
 
-        while(this.library.containsKey(str.toString())) {
-            for(Book b : this.library.get(str.toString()).books) {
+        while(this.library.containsKey(str)) {
+            for(Book b : this.library.get(str).books) {
                 if(isbnsForGenre.size() == limit) {
                     return isbnsForGenre;
                 }
                 isbnsForGenre.add(b.isbn);
             }
             x++;
-            str = new StringBuilder();
-            str.append(genre);
-            str.append(" - ");
-            str.append(Integer.toString(x));
+            str = shelfNameString(genre, x);
         }
 
         return isbnsForGenre;                     
